@@ -7,39 +7,43 @@
     const MOCK_TRANSACTIONS = [
         {
             kind: 'outcome',
-            amount: 279,
-            title: 'Suéter preto',
+            amount: 280,
+            title: 'Black sweater',
             description: '',
             supplier: 'Zara',
             creationDate: '2024/07/08',
-            referenceDate: '2024/05',
+            referenceDate: '2024/08',
             source: 'Santander',
-            recurrent: false,
+            recurrent: {
+                recurrencyID: '02118234',
+                from: '2024/08',
+                to: '2024/09'
+            },
             adjusted: false
         },
         {
             kind: 'income',
-            amount: 816.54,
-            title: 'Salário',
+            amount: 850.90,
+            title: 'Salary',
             description: '',
-            supplier: 'Kebook',
+            supplier: 'Company',
             creationDate: '2024/07/08',
             referenceDate: '2024/07',
             source: 'Nubank',
             recurrent: {
                 recurrencyID: '59915883',
-                from: '2024/04'
+                from: '2023/08'
             },
             adjusted: true
         },
         {
             kind: 'outcome',
-            amount: 303.59,
-            title: 'Passagem aérea',
+            amount: 300.25,
+            title: 'Flight',
             description: '',
-            supplier: 'GOL',
+            supplier: 'Azul Airlines',
             creationDate: '2024/07/08',
-            referenceDate: '2024/07',
+            referenceDate: '2024/08',
             source: 'Santander',
             recurrent: {
                 recurrencyID: '65298152',
