@@ -1,8 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::result::Result;
+use sqlx::{sqlite::SqliteQueryResult, SqlitePool};
 use tauri::{CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
 use tauri::Manager;
+
+// pub mod database;
 
 fn main() {
    let quit = CustomMenuItem::new("quit".to_string(), "Quit");
@@ -25,6 +29,7 @@ fn main() {
          _ => {}
       })
       .invoke_handler(tauri::generate_handler![greet])
+      .invoke_handler(tauri::generate_handler![create_database])
       .system_tray(system_tray)
       .on_system_tray_event(|app, event| match event {
          SystemTrayEvent::DoubleClick {
@@ -59,4 +64,21 @@ fn main() {
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}!", name)
+}
+
+#[tauri::command]
+async fn create_database() {
+   let pool = SqlitePool::connect("sqlite://database/data.db").await.unwrap_or(false);
+   let query = "
+      CREATE IF NOT EXISTS suppliers (
+         name VARCHAR(255) NOT NULL,
+         id INTEGER PRIMARY KEY NOT NULL
+      );
+   ";
+
+   let result = sqlx::query(&query).execute(&pool).await;
+   if pool {
+      pool.close().await;
+   }
+   // return result;
 }

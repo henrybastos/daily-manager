@@ -113,7 +113,7 @@
 
        <div class="p-3 border border-stone-700 rounded-md grid grid-cols-subgrid col-span-full gap-y-2">
            {#each MOCK_TRANSACTIONS as transaction}    
-               <div class="group grid grid-cols-subgrid grid-rows-1 col-span-full items-center *:leading-none *:whitespace-nowrap" data-transaction-kind={transaction.kind}>
+               <Button variant="ghost" class="group grid grid-cols-subgrid grid-rows-1 col-span-full items-center hover:bg-stone-700/30 *:leading-none *:whitespace-nowrap" data-transaction-kind={transaction.kind}>
                    <i class="ti ti-square-arrow-up-filled text-xl group-data-[transaction-kind=income]:text-green-500 group-data-[transaction-kind=outcome]:text-red-500"></i>
                    <span class="text-stone-500 font-medium">{ transaction.supplier }</span>
                    <span>{ transaction.title }</span>
@@ -121,7 +121,7 @@
                    <span class="border border-stone-600 text-stone-500 rounded-md px-2 py-1 w-min text-sm font-medium">{ transaction.source }</span>
                    <span>{ MONTHS_STR[new Date(transaction.referenceDate).getMonth()] }</span>
                    <span>{ new Intl.NumberFormat('en-US', { style: 'currency', currency: 'BRL'}).format(transaction.amount) }</span>
-               </div>
+               </Button>
            {/each}
        </div>
    </div>

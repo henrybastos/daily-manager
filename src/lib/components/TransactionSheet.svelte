@@ -4,10 +4,13 @@
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { Input } from "$lib/components/ui/input/index.ts";
 	import { Label } from "$lib/components/ui/label/index.ts";
-	import CardContent from "./ui/card/card-content.svelte";
+	import CardContent from "$lib/components/ui/card/card-content.svelte";
+	import Textarea from "$lib/components/ui/textarea/textarea.svelte";
 	import * as v from 'valibot';
+	import { invoke } from "@tauri-apps/api/tauri";
 
 	export let open = false;
+	export let data;
 
 	let title = '';
 	let kind = 'income';
@@ -15,7 +18,7 @@
 	let titleIssue;
 
 	const newTransacSchema = v.object({
-		title: v.pipe(v.string('The title must be a text'), v.maxLength(10, 'The maximum length allowed is 10!'), v.email('EMAILLLL!!'))
+		title: v.pipe(v.string('The title must be a text'))
 	});
 
 	function extractIssue(issues, key) {
@@ -25,7 +28,7 @@
 			.reduce((a,b) => `${a} ${b}`);
 	}
 
-	function submitNewTransaction() {
+	async function submitNewTransaction() {
 		const result = v.safeParse(newTransacSchema, {
 			title
 		});
@@ -38,6 +41,16 @@
 			// console.log('[ERROR]', issues);
 			titleIssue = extractIssue(issues, 'title');
 			console.log('TITLE ISSUE', titleIssue);
+		} else {
+			console.log('Creating database...');
+			console.log('INVOKE', await invoke('create_database'));
+		}
+	}
+
+	function resetFields(v) {
+		if (!v) {
+			title = '';
+			kind = 'income';
 		}
 	}
 </script>
@@ -59,8 +72,8 @@ recurrent: {
 adjusted: false 
 -->
 
-<Sheet.Root bind:open>
-	<Sheet.Content class="min-w-[60rem]" side="right">
+<Sheet.Root onOpenChange={resetFields} bind:open>
+	<Sheet.Content class="min-w-[46rem] bg-stone-900" side="right">
 		<Sheet.Header>
 			<Sheet.Title>Edit profile</Sheet.Title>
 			<Sheet.Description>
@@ -74,16 +87,21 @@ adjusted: false
 				<Input class="mt-1 text-base" id="name" placeholder="Milk from the store" bind:value={title} />
 			</div>
 
+			<div>
+				<Label class="text-base">Description</Label>
+				<Textarea rows="3" class="mt-1 text-base resize-none" placeholder="Some description"/>
+			</div>
+
 			<div class="flex flex-col">
 				<Label class="text-base" for="r2">Transaction Kind</Label>
 
 				<div class="flex flex-row mt-1 *:flex *:flex-row *:items-center *:gap-x-3 gap-x-2">
-					<Button variant="ghost" on:click={() => kind = 'income'} class="px-3 py-1 rounded-md transition-all *:cursor-pointer cursor-pointer">
+					<Button variant="ghost" on:click={() => kind = 'income'} class="px-3 py-1 hover:bg-stone-800 rounded-md transition-all *:cursor-pointer cursor-pointer">
 						<i data-kind={kind} class="ti ti-square-arrow-up-filled text-xl transition-all text-stone-500 data-[kind=income]:text-green-500"></i>
 						<Label class="text-base" for="r1">Income</Label>
 					</Button>
 	
-					<Button variant="ghost" on:click={() => kind = 'outcome'} class="px-3 py-1 rounded-md transition-all *:cursor-pointer cursor-pointer">
+					<Button variant="ghost" on:click={() => kind = 'outcome'} class="px-3 py-1 hover:bg-stone-800 rounded-md transition-all *:cursor-pointer cursor-pointer">
 						<i data-kind={kind} class="ti ti-square-arrow-up-filled text-xl transition-all text-stone-500 data-[kind=outcome]:text-red-500"></i>
 						<Label class="text-base" for="r2">Outcome</Label>
 					</Button>
