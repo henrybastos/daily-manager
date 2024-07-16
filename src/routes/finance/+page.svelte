@@ -55,6 +55,9 @@
         }
     ];
 
+    // let transactions = MOCK_TRANSACTIONS;
+    let transactions = [];
+
     let BOTTOM_BAR_INFO = [];
 
     const MONTHS_STR = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
@@ -63,29 +66,37 @@
         transactionSheetOpenState = true;
     }
 
-    onMount(() => {
-        const incomeTransactions = MOCK_TRANSACTIONS
-            .filter(v => v.kind === 'income')
-            .map(v => v.amount)
-            .reduce((a,b) => a + b);
-        const outcomeTransactions = MOCK_TRANSACTIONS
-            .filter(v => v.kind === 'outcome')
-            .map(v => v.amount)
-            .reduce((a,b) => a + b);
+    onMount(async () => {
+        const response = await fetch('/finance');
+        const data = await response.json();
+        transactions = data.transactions;
 
-        BOTTOM_BAR_INFO = [
-            {
-                icon: 'switch-vertical',
-                label: 'Transactions',
-                data: MOCK_TRANSACTIONS.length
-            },
-            {
-                icon: 'coins',
-                label: 'Balance',
-                data: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'BRL'})
-                    .format(incomeTransactions - outcomeTransactions)
+        console.log(transactions);
+        if (transactions) {
+            let incomeTransactions = transactions.filter(v => v.kind === 'income');
+            if (incomeTransactions.length > 0) {
+                incomeTransactions = incomeTransactions.map(v => v.amount).reduce((a,b) => a + b);
             }
-        ];
+
+            let outcomeTransactions = transactions.filter(v => v.kind === 'outcome');
+            if (outcomeTransactions.length > 0) {
+                outcomeTransactions = outcomeTransactions.map(v => v.amount).reduce((a,b) => a + b);
+            }
+    
+            BOTTOM_BAR_INFO = [
+                {
+                    icon: 'switch-vertical',
+                    label: 'Transactions',
+                    data: transactions.length
+                },
+                {
+                    icon: 'coins',
+                    label: 'Balance',
+                    data: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'BRL'})
+                        .format(incomeTransactions - outcomeTransactions)
+                }
+            ];
+        }
     })
 </script>
 
@@ -112,9 +123,13 @@
        </div>
 
        <div class="p-3 border border-stone-700 rounded-md grid grid-cols-subgrid col-span-full gap-y-2">
-           {#each MOCK_TRANSACTIONS as transaction}    
+           {#each transactions as transaction}    
                <div class="group grid grid-cols-subgrid grid-rows-1 col-span-full items-center *:leading-none *:whitespace-nowrap" data-transaction-kind={transaction.kind}>
-                   <i class="ti ti-square-arrow-up-filled text-xl group-data-[transaction-kind=income]:text-green-500 group-data-[transaction-kind=outcome]:text-red-500"></i>
+                    {#if transaction.kind == 'outcome'}
+                        <i class="ti ti-square-arrow-down-filled text-xl group-data-[transaction-kind=outcome]:text-red-500"></i>
+                    {:else}
+                        <i class="ti ti-square-arrow-up-filled text-xl group-data-[transaction-kind=income]:text-green-500"></i>
+                    {/if}
                    <span class="text-stone-500 font-medium">{ transaction.supplier }</span>
                    <span>{ transaction.title }</span>
                    <span>{ transaction.description }</span>

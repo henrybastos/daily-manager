@@ -28,9 +28,19 @@
                password
             })
          });
-   
+
          const { token } = await response.json();
          console.log('New user token:', token);
+         
+         const dbResponse = await fetch('/api/database', {
+            method: 'POST',
+            body: JSON.stringify({
+               username,
+               password
+            })
+         });
+   
+         console.log('Database response', dbResponse);
       }
    }
 </script>
