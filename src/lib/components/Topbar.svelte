@@ -12,6 +12,11 @@
          label: 'Finance',
          icon: 'wallet',
          path: '/finance'
+      },
+      {
+         label: 'Login',
+         icon: 'user',
+         path: '/login'
       }
    ];
 
