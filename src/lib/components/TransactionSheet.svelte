@@ -1,6 +1,5 @@
 <script>
 	import * as Sheet from "$lib/components/ui/sheet/index.ts";
-	import * as RadioGroup from "$lib/components/ui/radio-group/index.ts";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { Input } from "$lib/components/ui/input/index.ts";
 	import { Label } from "$lib/components/ui/label/index.ts";
@@ -14,8 +13,8 @@
 
 	let titleIssue;
 
-	const newTransacSchema = v.object({
-		title: v.pipe(v.string('The title must be a text'), v.maxLength(10, 'The maximum length allowed is 10!'), v.email('EMAILLLL!!'))
+	const newTransactionSchema = v.object({
+		title: v.pipe(v.maxLength(250, 'The maximum length allowed is 250'))
 	});
 
 	function extractIssue(issues, key) {
@@ -26,7 +25,7 @@
 	}
 
 	function submitNewTransaction() {
-		const result = v.safeParse(newTransacSchema, {
+		const result = v.safeParse(newTransactionSchema, {
 			title
 		});
 
@@ -62,10 +61,7 @@ adjusted: false
 <Sheet.Root bind:open>
 	<Sheet.Content class="min-w-[60rem]" side="right">
 		<Sheet.Header>
-			<Sheet.Title>Edit profile</Sheet.Title>
-			<Sheet.Description>
-				Make changes to your profile here. Click save when you're done.
-			</Sheet.Description>
+			<Sheet.Title class="text-xl">New Transaction</Sheet.Title>
 		</Sheet.Header>
 
 		<div class="flex flex-col mt-6 gap-y-4">
@@ -103,7 +99,10 @@ adjusted: false
 		</div> -->
 
 		<Sheet.Footer>
-			<Button on:click={submitNewTransaction} type="submit">New transaction</Button>
+			<Button class="mt-3" on:click={submitNewTransaction}>
+				<i class="ti ti-plus text-xl mr-2"></i>
+				New transaction
+			</Button>
 		</Sheet.Footer>
 	</Sheet.Content>
 </Sheet.Root>

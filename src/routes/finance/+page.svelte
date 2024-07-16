@@ -1,9 +1,11 @@
 <script>
+    import SuppliersSheet from "$lib/components/SuppliersSheet.svelte";
     import TransactionSheet from "$lib/components/TransactionSheet.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
     import { onMount } from "svelte";
 
     let transactionSheetOpenState = false;
+    let suppliersSheetOpenState = false;
 
     const MOCK_TRANSACTIONS = [
         {
@@ -65,6 +67,10 @@
     function openTransactionSheet () {
         transactionSheetOpenState = true;
     }
+    
+    function openSuppliersSheet () {
+        suppliersSheetOpenState = true;
+    }
 
     onMount(async () => {
         const response = await fetch('/finance');
@@ -105,6 +111,11 @@
        <Button on:click={openTransactionSheet} class="hover:bg-stone-900" variant="ghost">
            <i class="ti ti-plus text-xl mr-3"></i>
            New transaction
+       </Button>
+       
+       <Button on:click={openSuppliersSheet} class="hover:bg-stone-900" variant="ghost">
+           <i class="ti ti-users text-xl mr-3"></i>
+           Suppliers
        </Button>
    </div>
 
@@ -153,3 +164,4 @@
 </section>
 
 <TransactionSheet bind:open={transactionSheetOpenState} />
+<SuppliersSheet bind:open={suppliersSheetOpenState} />
