@@ -24,12 +24,3 @@ export async function POST({ request }) {
       data
    }), { status: 200 })
 }
-
-// Ganhe acesso exclusivo ao grupo VIP no WhatsApp para suporte direto!
-// https://kronus.kebook.com.br/assets/255cbd76-d5f1-4aa6-a8e0-a12a9ec1b07c.webp
-
-// Aproveite 40% de desconto e ganhe
-// acesso exclusivo ao Grupo VIP no WhatsApp para suporte direto!
-// APROVEITE ESSE DESCONTO
-
-// ?cupom=OFERTAEXCLUSIVA

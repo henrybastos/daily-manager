@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@internationalized/date": "^3.5.4",
 		"@sveltejs/adapter-static": "^3.0.2",
 		"better-sqlite3": "^11.1.2",
 		"bits-ui": "^0.21.12",

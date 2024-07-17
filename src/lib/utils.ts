@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
+import type { ObjectSchema, BaseIssue, SafeParseResult, ObjectEntries, ErrorMessage } from "valibot";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -60,3 +61,17 @@ export const flyAndScale = (
 		easing: cubicOut
 	};
 };
+
+export function extractIssue(result: SafeParseResult<ObjectSchema<ObjectEntries, ErrorMessage<BaseIssue<unknown>>>>, key: string) {
+	if (result?.issues) {
+		const issues = result.issues.map(issue => ({
+			issueKeys: issue?.path ? issue.path.map(issuePath => issuePath.key) : [],
+			message: issue.message
+		}));
+
+		return issues
+			.filter((issue) => issue.issueKeys.includes(key))
+			?.map(v => v.message)
+			.reduce((a,b) => `${a} ${b}`);
+	}
+}
